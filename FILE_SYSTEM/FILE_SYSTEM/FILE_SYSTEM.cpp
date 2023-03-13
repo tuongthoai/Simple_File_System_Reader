@@ -8,8 +8,8 @@ int main()
 {
     // xử lí nhập tên ổ đĩa
     std::wstring disk_name = L"E";
-    //cout << "Nhap ten o dia: ";
-    //wcin >> disk_name;
+    std::cout << "Nhap ten o dia: ";
+    std::wcin >> disk_name;
     disk_name = L"\\\\.\\" + disk_name + L":";
     LPCWSTR drive = disk_name.c_str();
     FAT_32* fs = new FAT_32(drive);

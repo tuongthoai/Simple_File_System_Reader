@@ -5,6 +5,7 @@
 #include <vector>
 #include <functional>
 #include <stack>
+#include <algorithm>
 #include "Abstract_File.h"
 #include "File.h"
 #include "Folder.h"
@@ -121,12 +122,12 @@ public:
 		if (!ReadFile(device, buffer, size, &bytesRead, NULL))
 		{
 			std::cout << "Read_File_Content : " << GetLastError() << std::endl;
-			return 0;
+			return -1;
 		}
 		else
 		{
 			// cout << "Success !!!" << endl;
-			return 1;
+			return bytesRead;
 		}
 	}
 
@@ -468,6 +469,8 @@ public:
 
 		Abstract_File* ptr = root;
 		std::stack<Abstract_File*> st;
+		std::cout << "\n";
+		std::getline(std::cin, usrCmd);
 		try {
 			while (true) {
 				printComponents(ptr);
@@ -475,8 +478,10 @@ public:
 				std::cout << rootPath <<'\n';
 				std::getline(std::cin, usrCmd);
 
+				if (usrCmd == "") continue;
+
 				std::vector<std::string> toks = stringSpliter(usrCmd);
-				if (toks.size() > 2) {
+				if (toks.size() != 2) {
 					throw std::bad_function_call();
 				}
 
@@ -518,42 +523,24 @@ public:
 								else {
 									File* f = (File*)p;
 
-									std::string content = "";
-
 									if (f->getName().find(".txt") != std::string::npos) {
 										UINT32 byteToRead = f->getFileSize();
 										std::vector<UINT32> clusters = f->getClusters();
+										UINT32 bytePerCluster = this->bytes_per_sector * this->sectors_per_cluster;
+										PBYTE data = new BYTE[bytePerCluster + 1];
 
-										PBYTE data = new BYTE[this->bytes_per_sector+1];
-
-										UINT32 cntRead = byteToRead / this->bytes_per_sector + 1;
-
-										auto it = clusters.begin(); 
-
-										while (it != clusters.end() && byteToRead > 0) {
-											for (int i = 0; i < this->sectors_per_cluster; ++i) {
-												int respone = Read_Sector(data, fromClusterToSector(*it) * this->bytes_per_sector, this->bytes_per_sector);
-												if (respone) {
-													if (byteToRead > this->bytes_per_sector) byteToRead -= this->bytes_per_sector;
-													else byteToRead = 0;
-
-													for (int i = 0; i < this->bytes_per_sector; ++i) {
-														if (data[i] > 0) {
-															content += char(data[i]);
-														}
-													}
-												}
-												else {
-													std::cout << "ERROR READING FILE CONTENT!\n";
-												}
-
-												if (byteToRead == 0) break;
+										for (int i = 0; i < (int)clusters.size(); ++i) {
+											if (byteToRead == 0) break;
+											int cnt = Read_Sector(data, fromClusterToSector(clusters[i]) * this->bytes_per_sector, bytePerCluster);
+											if (cnt == -1) {
+												std::cout << "READ FILE ERROR!";
+												break;
 											}
-											it++;
-										}
-
-										if (content != "") {
-											std::cout << content << "\n---------------------------------------------------\n";
+											if (byteToRead > bytePerCluster) data[bytePerCluster] = 0;
+											else data[byteToRead] = 0;
+											std::cout << (char*)(data);
+											
+											byteToRead -= (byteToRead < bytePerCluster ? byteToRead : bytePerCluster);
 										}
 									}
 									else {
