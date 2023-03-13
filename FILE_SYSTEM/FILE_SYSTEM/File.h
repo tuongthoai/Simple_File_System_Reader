@@ -7,8 +7,4 @@ public:
 	File() : Abstract_File() {
 
 	}
-
-	std::string toString() {
-		return this->getName();
-	}
 };

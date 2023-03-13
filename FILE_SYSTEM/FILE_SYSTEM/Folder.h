@@ -20,12 +20,4 @@ public:
 	}
 
 	std::vector<Abstract_File*>& getContext() { return this->context; }
-
-	std::string toString() {
-		std::string res = this->getName() + "\n";
-		for (auto p : context) {
-			res += "\t" + p->toString() + "\n";
-		}
-		return res;
-	}
 };

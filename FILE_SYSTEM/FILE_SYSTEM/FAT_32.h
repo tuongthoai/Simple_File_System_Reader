@@ -400,7 +400,7 @@ public:
 	void traversePreOrder(std::string& res, Abstract_File* node, std::string _padding, std::string _ptr) {
 		if (node != nullptr) {
 			res += _padding;
-			res += node->getName() + "[" + node->getFileState() + "]";
+			res += node->toString();
 			res += '\n';
 
 			std::string padding = _padding + "\t";
@@ -417,6 +417,12 @@ public:
 		}
 	}
 
+
+	/*
+	Split a string by space character using stringstream
+	INPUT: a string
+	OUTPUT: vector of strings
+	*/
 	std::vector<std::string> stringSpliter(std::string src) {
 		std::stringstream ss(src);
 		std::vector<std::string> tokens;
@@ -438,6 +444,15 @@ public:
 		return tokens;
 	}
 
+	/*
+	Checking if a dir is contain a abstract file name start with dirName
+	INPUT: 
+		curDir: Pointer of Abstract_File
+		dirName: name of the file
+	OUPUT: 
+		a pointer to the file start with dirName
+		nullptr if cannot find any file start with dirName
+	*/
 	Abstract_File* findNextDir(Abstract_File* curDir, std::string dirName) {
 		Folder* curD = (Folder*)curDir;
 		for (auto p : curD->getContext()) {
@@ -483,6 +498,7 @@ public:
 
 							for (auto p : curD->getContext()) {
 								if (p->getFileState() == "DIRECTORY" && p->getName().find(fName) != std::string::npos) {
+									st.push(ptr);
 									ptr = p;
 									break;
 								}

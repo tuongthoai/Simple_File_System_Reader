@@ -52,5 +52,13 @@ public:
 		return this->clusters;
 	}
 
-	virtual std::string toString() = 0;
+	std::string toString() {
+		std::string res = fileName + "[ " + this->getFileState() + " ] [ Size: " + std::to_string(this->getFileSize()) + " ] [ Clusters: ";
+		if (clusters.size() > 0) res += std::to_string(clusters[0]);
+		for (int i = 1; i < (int)clusters.size(); ++i) {
+			res += ", " + std::to_string(clusters[i]);
+		}
+		res += "]";
+		return res;
+	};
 };
