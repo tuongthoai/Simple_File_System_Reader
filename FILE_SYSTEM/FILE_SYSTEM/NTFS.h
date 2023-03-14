@@ -118,4 +118,11 @@ public:
 			return bytesRead;
 		}
 	}
+
+	void ReadMFT() {
+		UINT32 firstSectorOfMFT = this->MFT_begin_cluster * this->sectors_per_cluster;
+		MFT = new BYTE(this->MFT_entry_size);
+
+
+	}
 };
