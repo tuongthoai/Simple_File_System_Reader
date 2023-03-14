@@ -13,33 +13,10 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
-    <Filter Include="Header Files\NTFS">
-      <UniqueIdentifier>{13500168-8ca2-4af7-afc7-9a77dd2ab0c7}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\FAT32">
-      <UniqueIdentifier>{06b258b3-32e4-4c19-9c26-1f15006817f4}</UniqueIdentifier>
-    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="FILE_SYSTEM.cpp">
+    <ClCompile Include="NTFS_FS.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="Abstract_File.h">
-      <Filter>Header Files\FAT32</Filter>
-    </ClInclude>
-    <ClInclude Include="FAT_32.h">
-      <Filter>Header Files\FAT32</Filter>
-    </ClInclude>
-    <ClInclude Include="File.h">
-      <Filter>Header Files\FAT32</Filter>
-    </ClInclude>
-    <ClInclude Include="Folder.h">
-      <Filter>Header Files\FAT32</Filter>
-    </ClInclude>
-    <ClInclude Include="NTFS.h">
-      <Filter>Header Files\NTFS</Filter>
-    </ClInclude>
   </ItemGroup>
 </Project>
