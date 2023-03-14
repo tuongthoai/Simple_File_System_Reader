@@ -21,10 +21,9 @@
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
-    <ProjectGuid>{49ff1b9d-b546-4f51-b6c3-e3b050ed3693}</ProjectGuid>
-    <RootNamespace>FILESYSTEM</RootNamespace>
+    <ProjectGuid>{0374add9-f13c-4b51-95de-70e8c136b8e8}</ProjectGuid>
+    <RootNamespace>NTFSFS</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
-    <ProjectName>FAT_FS</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -140,14 +139,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="FILE_SYSTEM.cpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="FAT_32.h" />
-    <ClInclude Include="Abstract_File.h" />
-    <ClInclude Include="File.h" />
-    <ClInclude Include="Folder.h" />
-    <ClInclude Include="NTFS.h" />
+    <ClCompile Include="NTFS_FS.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

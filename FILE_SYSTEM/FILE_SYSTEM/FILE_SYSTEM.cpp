@@ -2,12 +2,13 @@
 //
 
 #include <iostream>
+#include "NTFS.h"
 #include "FAT_32.h"
 
 int main()
 {
     // xử lí nhập tên ổ đĩa
-    std::wstring disk_name = L"E";
+    std::wstring disk_name = L"F";
     std::cout << "Nhap ten o dia: ";
     std::wcin >> disk_name;
     disk_name = L"\\\\.\\" + disk_name + L":";
@@ -21,4 +22,8 @@ int main()
     fs->interactWithUser();
 
     delete fs;
+
+    //NTFS* fs = new NTFS(drive);
+
+    //delete fs;
 }
