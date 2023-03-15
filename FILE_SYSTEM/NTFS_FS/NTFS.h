@@ -300,7 +300,7 @@ public:
 		}
 	}
 
-	std::string Get_String(BYTE* DATA, int offset, int size)
+	std::string Get_String(BYTE* DATA, INT64 offset, INT64 size)
 	{
 		char* tmp = new char[size + 1];
 		memcpy(tmp, DATA + offset, size);
@@ -399,19 +399,22 @@ public:
 	*	Note: We only pay attention 
 	*/
 
-	void ReadMFT() {
-		INT64 firstSectorOfMFT = this->MFT_begin_cluster * this->sectors_per_cluster * this->bytes_per_sector;
+
+
+	void ReadMFTEntry(PBYTE MFT, INT64 pointer) {
+		/*INT64 firstSectorOfMFT = this->MFT_begin_cluster * this->sectors_per_cluster * this->bytes_per_sector;
 		PBYTE MFT = new BYTE(this->MFT_entry_size);
-		this->Read_Sector(MFT, firstSectorOfMFT, this->MFT_entry_size);
+		this->Read_Sector(MFT, firstSectorOfMFT, this->MFT_entry_size);*/
 		
 		//this->Print_Sector(buffer);
 
-		std::string Signature = Get_String(MFT, 0x00, 4);
+		/*std::string Signature = Get_String(MFT, 0x00, 4);
 		INT64 offsetToFirstAttr = readInt64(MFT, 0x14, 2);
-		INT64 realSizeOfRecord = readInt64(MFT, 0x18, 4);
+		INT64 realSizeOfRecord = readInt64(MFT, 0x18, 4);*/
 
-		INT64 pointer = offsetToFirstAttr;
+		//INT64 pointer = offsetToFirstAttr;
 
+		std::cout << "Information about the MFT entry: " << std::endl;
 		do {
 			INT64 attrType = readInt64(MFT, pointer, 4);
 			INT64 totalAttrLength = readInt64(MFT, pointer + 0x04, 4);
@@ -419,7 +422,7 @@ public:
 			
 			if (attrType == 0x10) //$STANDARD_INFORMATION case
 			{
-				std::cout << "Attribute Type: $STANDARD_INFORMATION" << std::endl;
+				std::cout << "\nAttribute Type: $STANDARD_INFORMATION" << std::endl;
 				if (non_residentFLag == 0) std::cout << "Resident Attribute" << std::endl;
 				else std::cout << "Non-Resident Attribute" << std::endl;
 
@@ -462,7 +465,7 @@ public:
 
 			else if (attrType == 0x30) //$FILE_NAME case
 			{
-				std::cout << "Attribute Type: $FILE_NAME" << std::endl;
+				std::cout << "\nAttribute Type: $FILE_NAME" << std::endl;
 				if (non_residentFLag == 0) std::cout << "Resident Attribute" << std::endl;
 				else std::cout << "Non-Resident Attribute" << std::endl;
 
@@ -473,9 +476,66 @@ public:
 				INT64 attrFileName_Length = readInt64(MFT, attrFileName_Start + 0x40, 1);
 				INT64 attrFileName_NameSpace = readInt64(MFT, attrFileName_Start + 0x41, 1);
 
+				std::string attrFileName_Name = Get_String(MFT, attrFileName_Start + 0x42, attrFileName_Length * 2);
+				if (attrFileName_Name == "$MFT") break;
+				std::cout << "The file's name: " <<attrFileName_Name << std::endl;
+			}
+
+			else if (attrType == 0x80)
+			{
+				std::cout << "\nAttribute Type: $DATA" << std::endl;
+				if (non_residentFLag == 0)
+				{
+					std::cout << "Resident Attribute" << std::endl;
+					INT64 attrDATA_Length = readInt64(MFT, pointer + 0x10, 4);
+					INT64 offsetAttrData = readInt64(MFT, pointer + 0x14, 2);
+					INT64 attrDATA_Start = pointer + offsetAttrData;
+					std::string DATA = Get_String(MFT, attrDATA_Start, attrDATA_Length);
+				}
+				
+				else
+				{
+					std::cout << "Non-Resident Attribute" << std::endl;
+					INT64 dataRunOffset = readInt64(MFT, pointer + 0x20, 2);
+					INT64 dataSize = readInt64(MFT, pointer + 0x30, 8); //real size allocated to file
+					INT64 firstClusterOfDatarun = readInt64(MFT, pointer + dataRunOffset + 0x02, 6);
+					INT64 dataRunOffset_Bytes = firstClusterOfDatarun * sectors_per_cluster * bytes_per_sector;
+					/*std::cout << firstClusterOfDatarun << std::endl;
+					std::cout << dataRunOffset_Bytes << std::endl;*/
+
+					INT64 dataPointer = dataRunOffset_Bytes;
+					std::string dataRead = Get_String(MFT, dataPointer, dataSize);
+					std::cout << dataRead << std::endl;
+				}
+
 			}
 
 			pointer += totalAttrLength;
+			UINT64 tmp = readUInt64(MFT, pointer, 4);
+			if (tmp == 0xFFFFFFFF) //end of entry
+				break;
 		} while (pointer <= MFT_entry_size);
+	}
+
+	void ReadMFT()
+	{
+		while (true)
+		{
+			INT64 firstSectorOfMFT = this->MFT_begin_cluster * this->sectors_per_cluster * this->bytes_per_sector;
+			PBYTE MFT = new BYTE(this->MFT_entry_size);
+			this->Read_Sector(MFT, firstSectorOfMFT, this->MFT_entry_size);
+			std::string Signature = Get_String(MFT, 0x00, 4);
+
+			INT64 offsetToFirstAttr = readInt64(MFT, 0x14, 2);
+			INT64 realSizeOfRecord = readInt64(MFT, 0x18, 4);
+
+			INT64 globalPointer = offsetToFirstAttr;
+
+			ReadMFTEntry(MFT, globalPointer);
+			globalPointer += MFT_entry_size;
+			UINT64 tmp = readUInt64(MFT, globalPointer, 4);
+			if (tmp == 0xFFFFFFFF) //end of entry
+				break;
+		}
 	}
 };
