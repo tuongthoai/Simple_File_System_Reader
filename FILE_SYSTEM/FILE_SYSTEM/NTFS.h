@@ -84,11 +84,16 @@ public:
 	*
 	* return 1: Read success 0: otherwise
 	*/
-	int Read_Sector(PBYTE& buffer, int readPoint, int size)
+	int Read_Sector(PBYTE& buffer, INT64 readPoint, int size)
 	{
 		int retCode = 0;
 		DWORD bytesRead;
 		HANDLE device = NULL;
+
+		LARGE_INTEGER li;
+
+		li.QuadPart = readPoint;
+
 
 		device = CreateFile(this->drive,               // Drive to open
 			GENERIC_READ,                              // Access mode
@@ -105,7 +110,7 @@ public:
 			return 0;
 		}
 
-		SetFilePointer(device, readPoint, NULL, FILE_BEGIN);//Set a Point to Read
+		SetFilePointer(device, li.LowPart, &li.HighPart, FILE_BEGIN);//Set a Point to Read
 
 		if (!ReadFile(device, buffer, size, &bytesRead, NULL))
 		{
@@ -120,9 +125,69 @@ public:
 	}
 
 	void ReadMFT() {
-		UINT32 firstSectorOfMFT = this->MFT_begin_cluster * this->sectors_per_cluster;
+		UINT64 firstSectorOfMFT = this->MFT_begin_cluster * this->sectors_per_cluster * this->bytes_per_sector;
 		MFT = new BYTE(this->MFT_entry_size);
 
+		Read_Sector(MFT, firstSectorOfMFT, this->MFT_entry_size);
 
+		Print_Sector(MFT);
+	}
+
+	void Print_Sector(BYTE* sector)
+	{
+		int count = 0;
+		int num = 0;
+
+		std::cout << "         0  1  2  3  4  5  6  7    8  9  A  B  C  D  E  F\n";
+
+		std::cout << "0x0" << num << "0  ";
+		bool flag = 0;
+		for (int i = 0; i < 512; i++)
+		{
+			count++;
+			if (i % 8 == 0)
+				std::cout << "  ";
+			printf("%02X ", sector[i]);
+			if (i == 255)
+			{
+				flag = 1;
+				num = 0;
+			}
+
+			if (i == 511) break;
+			if (count == 16)
+			{
+				int index = i;
+
+				std::cout << std::endl;
+
+				if (flag == 0)
+				{
+					num++;
+					if (num < 10)
+						std::cout << "0x0" << num << "0  ";
+					else
+					{
+						char hex = char(num - 10 + 'A');
+						std::cout << "0x0" << hex << "0  ";
+					}
+
+				}
+				else
+				{
+					if (num < 10)
+						std::cout << "0x1" << num << "0  ";
+					else
+					{
+						char hex = char(num - 10 + 'A');
+						std::cout << "0x1" << hex << "0  ";
+					}
+					num++;
+				}
+
+				count = 0;
+			}
+		}
+		std::cout << std::endl;
 	}
 };

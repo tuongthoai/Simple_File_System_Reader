@@ -261,7 +261,7 @@ public:
 	*
 	* return 1: Read success 0: otherwise
 	*/
-	int Read_Sector(PBYTE& buffer, int readPoint, int size)
+	int Read_Sector(PBYTE& buffer, INT64 readPoint, int size)
 	{
 		int retCode = 0;
 		DWORD bytesRead;
@@ -282,7 +282,11 @@ public:
 			return 0;
 		}
 
-		SetFilePointer(device, readPoint, NULL, FILE_BEGIN);//Set a Point to Read
+		LARGE_INTEGER li;
+		li.QuadPart = readPoint;
+
+
+		SetFilePointer(device, li.LowPart, &li.HighPart, FILE_BEGIN);//Set a Point to Read
 
 		if (!ReadFile(device, buffer, size, &bytesRead, NULL))
 		{
@@ -397,12 +401,12 @@ public:
 
 	void ReadMFT() {
 		INT64 firstSectorOfMFT = this->MFT_begin_cluster * this->sectors_per_cluster * this->bytes_per_sector;
-		PBYTE buffer = new BYTE(this->MFT_entry_size);
-		this->Read_Sector(buffer, firstSectorOfMFT, this->MFT_entry_size);
+		PBYTE MFT = new BYTE(this->MFT_entry_size);
+		this->Read_Sector(MFT, firstSectorOfMFT, this->MFT_entry_size);
 		
-		this->Print_Sector(buffer);
+		//this->Print_Sector(buffer);
 
-		;;;;;		std::string Signature = Get_String(MFT, 0x00, 4);
+		std::string Signature = Get_String(MFT, 0x00, 4);
 		INT64 offsetToFirstAttr = readInt64(MFT, 0x14, 2);
 		INT64 realSizeOfRecord = readInt64(MFT, 0x18, 4);
 
