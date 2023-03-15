@@ -38,7 +38,7 @@
     <ClInclude Include="Folder.h">
       <Filter>Header Files\FAT32</Filter>
     </ClInclude>
-    <ClInclude Include="NTFS.h">
+    <ClInclude Include="..\NTFS_FS\NTFS.h">
       <Filter>Header Files\NTFS</Filter>
     </ClInclude>
   </ItemGroup>

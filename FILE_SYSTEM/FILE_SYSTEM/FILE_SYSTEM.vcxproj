@@ -143,11 +143,11 @@
     <ClCompile Include="FILE_SYSTEM.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\NTFS_FS\NTFS.h" />
     <ClInclude Include="FAT_32.h" />
     <ClInclude Include="Abstract_File.h" />
     <ClInclude Include="File.h" />
     <ClInclude Include="Folder.h" />
-    <ClInclude Include="NTFS.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

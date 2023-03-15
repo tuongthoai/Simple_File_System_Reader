@@ -6,26 +6,36 @@
 
 int main()
 {
-    // xử lí nhập tên ổ đĩa
-    std::wstring disk_name = L"E";
-    std::cout << "Nhap ten o dia: ";
-    //std::wcin >> disk_name;
-    disk_name = L"\\\\.\\" + disk_name + L":";
-    LPCWSTR drive = disk_name.c_str();
-    NTFS* fs = new NTFS(drive);
-    fs->Print_BootSector();
+	char driveName;
+	std::cout << "Enter drive name: "; 
+	std::cin >> driveName;
 
-    fs->printComponents();
-    fs->ReadMFT();
-    /*fat32.Print_Directory_File_Tree();*/
-    //fat32.MENU();
-    fs->interactWithUser();
+	NTFS fs(driveName);
+	fs.readInfo();
 
-    delete fs;
-
-    //NTFS* fs = new NTFS(drive);
-
-    //delete fs;
+	while (true) {
+		system("cls");
+		std::cout << " Volume " << (char)toupper(driveName) << " - NTFS\n\n";
+		std::cout << " 1. XEM NOI DUNG\n";
+		std::cout << " 2. IN CAY THU MUC\n";
+		std::cout << " 0. Exit\n\n";
+		int choice;
+		std::cout << " LUA CHON: "; std::cin >> choice;
+		switch (choice)
+		{
+		case 0:
+			return 0;
+		case 1:
+			fs.printInfo();
+			system("pause");
+			break;
+		case 2:
+			fs.displayDirectory();
+			break;
+		default:
+			break;
+		}
+	}
 }
 
 
