@@ -5,6 +5,7 @@
 
 MFT_Entry::MFT_Entry() {
 	_firstSector = -1;
+
 	_size = 0;
 }
 
@@ -112,19 +113,5 @@ void MFT_Entry::printInfo(int number) {
 }
 
 bool MFT_Entry::isTXT() {
-	if (!_isFile) {
-		return false;
-	}
-
-	string extension;
-	vector<string> fileName = Utils::split(_name, ".");
-	string temp = fileName[1];
-	for (int i = 0; i < temp.size(); i++) { // Delete " " in string
-		if (temp[i] != '\0')
-			extension += temp[i];
-	}
-	for (int i = 0; i < extension.size(); i++) {
-		extension[i] = toupper(extension[i]);
-	}
-	return extension == "TXT";
+	return this->_name.find(".txt") != std::string::npos;
 }

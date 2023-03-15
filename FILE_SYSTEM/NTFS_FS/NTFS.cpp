@@ -27,19 +27,17 @@ void NTFS::readInfo() {
 
 void NTFS::printInfo() {
 	const int SPACE = 19;
-	system("cls");
-	std::cout << "| Bytes per sector         :" << setw(SPACE) << bytesPerSector << " |" << std::endl;
-	std::cout << "| Sectors per cluster      :" << setw(SPACE) << sectorsPerCluster << " |" << std::endl;
-	std::cout << "| Media descriptor         :" << setw(SPACE) << (info.Media_Descriptor == 0xF8 ? "Fixed Disk (F8)" : Utils::decToHex(info.Media_Descriptor)) << " |" << std::endl;
-	std::cout << "| Sectors per track        :" << setw(SPACE) << Utils::reverseByte(info.Sectors_Track, 2) << " |" << std::endl;
-	std::cout << "| Number of heads          :" << setw(SPACE) << Utils::reverseByte(info.number_of_Heads, 2) << " |" << std::endl;
-	std::cout << "| Hidden sectors           :" << setw(SPACE) << Utils::reverseByte(info.Hidden_sectors, 4) << " |" << std::endl;
-	std::cout << "| Total sectors            :" << setw(SPACE) << info.total_sectors << " |" << std::endl;
-	std::cout << "| $MFT cluster number      :" << setw(SPACE) << info.Logical_MFT << " |" << std::endl;
-	std::cout << "| $MFTMirr cluster number  :" << setw(SPACE) << info.Logical_MFTMirr << " |" << std::endl;
-	std::cout << "| Size of MFT entry        :" << setw(SPACE) << sizeOfMFTEntry << " |" << std::endl;
-	std::cout << "| Cluster per Index Buffer :" << setw(SPACE) << (int)info.Cluster_Index_Buffer << " |" << std::endl;
-	std::cout << std::endl;
+	std::cout << "Bytes per sector         :" << setw(SPACE) << bytesPerSector << std::endl;
+	std::cout << "Sectors per cluster      :" << setw(SPACE) << sectorsPerCluster << std::endl;
+	std::cout << "Media descriptor         :" << setw(SPACE) << (info.Media_Descriptor == 0xF8 ? "Fixed Disk (F8)" : Utils::decToHex(info.Media_Descriptor)) << std::endl;
+	std::cout << "Sectors per track        :" << setw(SPACE) << Utils::reverseByte(info.Sectors_Track, 2) << std::endl;
+	std::cout << "Number of heads          :" << setw(SPACE) << Utils::reverseByte(info.number_of_Heads, 2) << std::endl;
+	std::cout << "Hidden sectors           :" << setw(SPACE) << Utils::reverseByte(info.Hidden_sectors, 4) << std::endl;
+	std::cout << "Total sectors            :" << setw(SPACE) << info.total_sectors << std::endl;
+	std::cout << "$MFT cluster number      :" << setw(SPACE) << info.Logical_MFT << std::endl;
+	std::cout << "$MFTMirr cluster number  :" << setw(SPACE) << info.Logical_MFTMirr << std::endl;
+	std::cout << "Size of MFT entry        :" << setw(SPACE) << sizeOfMFTEntry << std::endl;
+	std::cout << "Cluster per Index Buffer :" << setw(SPACE) << (int)info.Cluster_Index_Buffer << std::endl;
 }
 
 void NTFS::displayDirectory() {
